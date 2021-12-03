@@ -2,8 +2,7 @@ const express = require('express');
 const app = express();
 app.use(express.json());
 var cors = require('cors')
-
-app.use(cors()) // Use this after the variable declaration
+app.use(cors())
 
 
 app.get('/events', async (req, res) => {
@@ -17,8 +16,8 @@ app.get('/events', async (req, res) => {
 });
 
 app.post('/events', async (req, res) => {
-  client.query('INSERT INTO events(kind, team1, team2, betTeam1, betTeam2, winner, statu) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *',
-  [req.body.kind, req.body.team1, req.body.team2, req.body.betTeam1, req.body.betTeam2, req.body.winner, req.body.statu], (err, result) => {
+  client.query('INSERT INTO events(kind, team1, team2, betTeam1, betTeam2, winner, betStatus) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *',
+  [req.body.kind, req.body.team1, req.body.team2, req.body.betteam1, req.body.betteam2, req.body.winner, req.body.betstatus], (err, result) => {
     if (err) {
       console.log(err.stack)
     } else {
@@ -40,8 +39,8 @@ app.delete('/events/:id', async (req, res) => {
 });
 app.put('/events/:id', async (req, res) => {
     let id = req.params.id;
-    client.query('UPDATE events SET kind = $1, team1 = $2, team2 = $3, betTeam1 = $4, betTeam2 = $5, winner = $6, statu = $7 WHERE id = $8;',
-    [req.body.kind, req.body.team1, req.body.team2, req.body.betTeam1, req.body.betTeam2, req.body.winner, req.body.statu, id], (err, result) => {
+    client.query('UPDATE events SET kind = $1, team1 = $2, team2 = $3, betTeam1 = $4, betTeam2 = $5, winner = $6, betStatus = $7 WHERE id = $8;',
+    [req.body.kind, req.body.team1, req.body.team2, req.body.betteam1, req.body.betteam2, req.body.winner, req.body.betstatus, id], (err, result) => {
       if (err) {
         console.log(err.stack)
       } else {

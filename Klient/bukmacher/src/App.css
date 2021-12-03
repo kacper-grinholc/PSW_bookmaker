@@ -13,6 +13,26 @@
   }
 }
 
+table {
+  border-collapse: separate;
+  background-color: black;
+  color: white;
+  border:1px solid white;
+  margin-bottom: 10px;
+  border-radius:6px;
+}
+
+td,tr{
+  width: 150px;
+  height: 80px;
+  border-collapse: collapse;
+}
+
+td:hover{
+  background-color: yellow;
+  color: red;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

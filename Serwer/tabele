@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS events (
    betTeam1 INT,
    betTeam2 INT,
    winner VARCHAR,
-   statu VARCHAR NOT NULL
+   betStatus VARCHAR NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS activeBet (

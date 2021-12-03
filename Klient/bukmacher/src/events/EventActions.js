@@ -1,5 +1,4 @@
 import axios from "axios";
-
 export const EVENT_CREATE = 'EVENT_CREATE';
 export const EVENT_LIST_REQUEST = 'EVENT_LIST_REQUEST';
 export const EVENT_LIST_REQUEST_START = 'EVENT_LIST_REQUEST_START';
@@ -37,3 +36,17 @@ export const getEventList = () => {
         },)
     }
 }
+
+// export const postEventList = (data) => {
+//     return async dispatch => {
+//         dispatch(eventsListRequestStartAction);
+//         setTimeout(async () => {
+//             try{
+//                 const response = await axios.post('http://localhost:5000/events', data);
+//                 dispatch(eventsListRequestAction(response.data));        
+//             }catch(ex) {
+//                 dispatch(eventsListRequestFailAction(ex));
+//             }
+//         },)
+//     }
+// }
