@@ -15,7 +15,7 @@ const EventDetails = ({ events, getEventList, loading} ,props) => {
                 :
                 events.map(event => {
                     return (
-                        <div key={event.id}>{event.kind}</div>
+                        <div key={event.id}>{event.betStatus}, {event.kind}</div>
                         )})
             }
         </div>
