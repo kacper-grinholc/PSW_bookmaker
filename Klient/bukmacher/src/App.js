@@ -16,6 +16,7 @@ import AccountLogout from './Accounts/AccountLogout';
 import { LogMenu } from './Home/LogMenu';
 import { LogAdmin } from './Home/LogAdmin';
 import UserForm from './Accounts/UserForm';
+import AddMoney from './Bets/AddMoney';
 
 function App() {
 
@@ -53,6 +54,9 @@ function App() {
           </Route>
           <Route path="/events">
             <EventList />
+          </Route>
+          <Route path="/charge">
+            <AddMoney />
           </Route>
           <Route path="/register">
             <AccountRegister />

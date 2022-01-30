@@ -19,11 +19,10 @@ const AccountRegister = ({history}, props) => {
     const register = async (values) => {
         try {
             const response = await axios.post('http://localhost:5000/register', values);
-            if (response.status === 200)
+            if (response.status === 201)
             {
                 alert("Zarejestrowano, zaloguj się");
                 window.location.reload(true);
-                history.push(`/login`);
             }
         } catch (ex) {
             console.log(ex)

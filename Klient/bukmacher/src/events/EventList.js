@@ -1,26 +1,64 @@
 import { connect } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { eventListAction } from "./EventActions";
+import { withRouter } from "react-router";
+import { eventListAction, addEventAction, deleteEventAction, editEventAction } from "./EventActions";
 import getData from "../Home/getData";
 import { AdminEvent } from "../Home/AdminEvent";
+import usingMqtt from "../Home/mqtt";
 
-const EventList = ({ events, isEventLoaded, eventListAction }, props) => {
+const EventList = ({ events, isEventLoaded, eventListAction, addEventAction, editEventAction, deleteEventAction, query }, props) => {
 
     useEffect(() => {
-        getData(isEventLoaded, eventListAction)
+        getData(false, eventListAction, query)
+        usingMqtt({
+            "EVENT_ADDED": addEventAction,
+            "EVENT_EDITED": editEventAction,
+            "EVENT_DELETED": deleteEventAction
+        })
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    const [filter, setfilter] = useState(query)
+
+    const handlefilterChange = (event) => {
+        isEventLoaded = false
+        setfilter((event.target.value));
+    }
+
+
     const calculateodds = (odd1, odd2) => {
-        const odd = (1/(parseFloat(odd1)/(parseFloat(odd1) + parseFloat(odd2))))
+        const odd = (1 / (parseFloat(odd1) / (parseFloat(odd1) + parseFloat(odd2))))
         return odd.toFixed(2);
     }
+    
+    const searchQuery = (filter) => {
+        if (filter !== undefined){
+            window.location.replace(`http://localhost:3000/events?query=${filter}`);
+        }
+    }
+
+    const queryResult = (query) => {
+        if (query !== undefined && query !== null){
+            return(
+                <h3>Znaleziono wyniki dla: {query}</h3>
+            )
+        }
+    }
+
     return (
         <div className="Karta">
             <h1>Lista wydarzeń</h1>
+            {queryResult(query)}
             <div className="Wyniki">
-                {events.map(event => {
+            <div><input type="text" onChange={handlefilterChange}/></div>
+            <button onClick={() => searchQuery(filter)}>Szukaj {filter}</button>
+                {events
+                .sort((firstItem, secondItem) =>
+                (firstItem.id > secondItem.id) ? -1:1)
+                .sort((firstItem, secondItem) =>
+                (firstItem.eventstatus > secondItem.eventstatus) ? 1:-1)
+                .map(event => {
                     return (
                         <div className="Item" key={event.id}>
                             <div>Dyscyplina: {event.kind}</div>
@@ -42,16 +80,20 @@ const EventList = ({ events, isEventLoaded, eventListAction }, props) => {
     )
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, props) => {
     return {
         events: state.events.events,
         isEventLoaded: state.events.dataLoaded,
+        query: new URLSearchParams(props.location.search).get("query"),
     };
 }
 
 const mapDispatchToProps = {
     eventListAction,
+    addEventAction,
+    editEventAction,
+    deleteEventAction
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(EventList);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EventList));

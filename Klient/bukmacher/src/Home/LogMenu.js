@@ -49,6 +49,9 @@ export const LogMenu = () => {
             <Link className="Link" to={`/user/edit/${jwt.decode(Cookies.get("token")).user_id}`}>Edytuj konto</Link>
           </li>
           <li>
+            <Link className="Link" to="/charge">Doładuj konto</Link>
+          </li>
+          <li>
           <button onClick={() => deleteAccount()}>Usuń konto</button>
           </li>
           </div>

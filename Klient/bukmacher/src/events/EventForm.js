@@ -16,7 +16,7 @@ const validateEvent = Yup.object({
     // eats: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
 });
 
-const EventForm = ({ isEventLoaded, eventListAction, addEventAction, event, editEventAction, maybeID }, props) => {
+const EventForm = ({ eventListAction, addEventAction, event, editEventAction, maybeID }, props) => {
 
     useEffect(() => {
         getData(false, eventListAction)
@@ -24,7 +24,6 @@ const EventForm = ({ isEventLoaded, eventListAction, addEventAction, event, edit
     }, [])
     
     const addInitalBet = async (values, team) => {try {
-        console.log("id", values[0].id, "team", team)
         const response = await axios.post('http://localhost:5000/bets', {
             userid: 0,
             eventId: values[0].id,
@@ -37,7 +36,7 @@ const EventForm = ({ isEventLoaded, eventListAction, addEventAction, event, edit
             }
         });
         if (response.status === 200){
-            addEventAction(response.data);
+            getData(false, eventListAction)
         }
     } catch (ex) {
         console.log(ex)
@@ -101,7 +100,7 @@ const EventForm = ({ isEventLoaded, eventListAction, addEventAction, event, edit
                 team1: `${event.team1}`,
                 team2: `${event.team2}`,
                 winner: `${event.winner}`,
-                eventStatus: `${event.eventstatus}`,
+                eventStatus: 'Zakończone',
             }
         }
     }

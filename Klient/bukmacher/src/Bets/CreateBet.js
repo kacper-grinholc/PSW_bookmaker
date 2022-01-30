@@ -15,6 +15,11 @@ const validateBet = Yup.object({
 });
 
 const CreateBet = ({isEventLoaded, eventListAction, event, maybeID}, props) => {
+    
+    if (Cookies.get("token") === undefined){
+        alert("Zaloguj się aby kontynuować")
+        window.location.replace("http://localhost:3000/login");
+    }
     const user = jwt.decode(Cookies.get("token")).user_id
     useEffect(() => {
         getData(false, eventListAction)
@@ -56,7 +61,7 @@ const CreateBet = ({isEventLoaded, eventListAction, event, maybeID}, props) => {
         try {
             const response = await axios.post('http://localhost:5000/operations', {
                 operationType: 'bet',
-                Amount: values.betAmount,
+                Amount: -values.betAmount,
                 userid: user
             }, {
                 headers: {
@@ -89,7 +94,7 @@ const CreateBet = ({isEventLoaded, eventListAction, event, maybeID}, props) => {
             odd: ''
         }
     }
-
+    if (event.eventstatus === "W trakcie") {
     return (
         <div className="Karta">
         <h1>Dodaj bet</h1>
@@ -130,6 +135,12 @@ const CreateBet = ({isEventLoaded, eventListAction, event, maybeID}, props) => {
     </div>
 
     )
+    }
+    else {
+        return (
+        <h1>Event zakończony</h1>
+        )
+    }
 };
 
 function getEvent(state, props) {

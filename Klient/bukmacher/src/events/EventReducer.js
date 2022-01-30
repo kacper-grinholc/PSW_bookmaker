@@ -7,9 +7,11 @@ const eventReducer = (state = {dataLoaded : false, events : [] }, action) => {
         case EVENT_ADD: 
             return {dataLoaded : state.dataLoaded, events : [...state.events, action.payload] };
         case EVENT_DELETE:
-            return {dataLoaded : state.dataLoaded, events : [...state.events.filter(el => el.id !== action.payload.id)] };
+            // eslint-disable-next-line eqeqeq
+            return {dataLoaded : state.dataLoaded, events : [...state.events.filter(el => el.id != action.payload.id)] };
         case EVENT_EDIT:
-            return {dataLoaded : state.dataLoaded, events : [...state.events.filter(el => el.id !== action.payload.id), action.payload] }
+            // eslint-disable-next-line eqeqeq
+            return {dataLoaded : state.dataLoaded, events : [...state.events.filter(el => el.id != action.payload.id), action.payload] }
         default:
             return state;
     }

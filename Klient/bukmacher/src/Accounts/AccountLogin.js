@@ -20,7 +20,7 @@ const AccountLogin = ({history}, props) => {
             const response = await axios.post('http://localhost:5000/login', values);
             if (response.status === 200)
             {
-                Cookies.set("token", response.data.token, { expires: 1 })
+                Cookies.set("token", response.data.token, { expires: 1/24 })
                 alert("Zalogowano");
                 history.push(`/`);
                 window.location.reload(true);
