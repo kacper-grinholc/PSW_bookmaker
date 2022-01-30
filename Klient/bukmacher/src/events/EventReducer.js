@@ -1,22 +1,18 @@
-import { EVENT_LIST_REQUEST, EVENT_LIST_REQUEST_FAILED, EVENT_LIST_REQUEST_START } from "./EventActions";
+import { EVENT_ADD, EVENT_DELETE, EVENT_EDIT, EVENT_LIST } from "./EventActions";
 
-const initState = {
-    events: [],
-    loading: false,
-    error: ''
-}
-
-const eventReducer = (state = initState, action) => {
+const eventReducer = (state = {dataLoaded : false, events : [] }, action) => {
     switch(action.type) {
-        case EVENT_LIST_REQUEST_START: 
-            return { ...state, loading: true }
-        case EVENT_LIST_REQUEST_FAILED:
-            return { ...state, loading: false, error: action.payload }
-        case EVENT_LIST_REQUEST:
-            return {...state, events: [...action.payload], loading: false };
+        case EVENT_LIST: 
+            return {dataLoaded : true, events : [...action.payload] }
+        case EVENT_ADD: 
+            return {dataLoaded : state.dataLoaded, events : [...state.events, action.payload] };
+        case EVENT_DELETE:
+            return {dataLoaded : state.dataLoaded, events : [...state.events.filter(el => el.id !== action.payload.id)] };
+        case EVENT_EDIT:
+            return {dataLoaded : state.dataLoaded, events : [...state.events.filter(el => el.id !== action.payload.id), action.payload] }
         default:
             return state;
     }
 }
 
-export default eventReducer;
+export default eventReducer

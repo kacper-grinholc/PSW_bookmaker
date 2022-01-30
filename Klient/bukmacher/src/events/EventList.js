@@ -1,34 +1,43 @@
-import { useEffect} from "react";
 import { connect } from "react-redux";
-import { getEventList} from "./EventActions";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { eventListAction } from "./EventActions";
+import getData from "../Home/getData";
+import { AdminEvent } from "../Home/AdminEvent";
 
-const EventList = ({ events, getEventList, loading} ,props) => {
+const EventList = ({ events, isEventLoaded, eventListAction }, props) => {
+
     useEffect(() => {
-        getEventList();
-    }, [getEventList]);
+        getData(isEventLoaded, eventListAction)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
+    const calculateodds = (odd1, odd2) => {
+        const odd = (1/(parseFloat(odd1)/(parseFloat(odd1) + parseFloat(odd2))))
+        return odd.toFixed(2);
+    }
     return (
-        <div>
-            {loading ?
-                <div>Trwa poberanie eventów</div>
-                :
-                events.map(event => {
+        <div className="Karta">
+            <h1>Lista wydarzeń</h1>
+            <div className="Wyniki">
+                {events.map(event => {
                     return (
-                        <table key={event.id}>
-                            <tbody>
-                                <tr>
-                                    <td>{event.kind}</td>
-                                    <td>{event.team1}</td>
-                                    <td>{event.team2}</td>
-                                    <td>{event.betteam1}</td>
-                                    <td>{event.betteam2}</td>
-                                    <td>{event.winner}</td>
-                                    <td>{event.betstatus}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        )})
-            }
+                        <div className="Item" key={event.id}>
+                            <div>Dyscyplina: {event.kind}</div>
+                            <Link className="LinkBet" to={`/bet/${event.id}`}>
+                                <div>Drużyna1: {event.team1} Kurs: {calculateodds(event.bett1, event.bett2)}</div>
+                            </Link>
+                            <Link className="LinkBet" to={`/bet/${event.id}`}>
+                                <div>Drużyna2: {event.team2} Kurs: {calculateodds(event.bett2, event.bett1)}</div>
+                            </Link>
+                            <div>Zwycięzca: {event.winner}</div>
+                            <div>Status: {event.eventstatus}</div>
+                            {AdminEvent(event)}
+                        </div>
+                    )
+                })
+                }
+            </div>
         </div>
     )
 };
@@ -36,12 +45,12 @@ const EventList = ({ events, getEventList, loading} ,props) => {
 const mapStateToProps = (state) => {
     return {
         events: state.events.events,
-        loading: state.events.loading
+        isEventLoaded: state.events.dataLoaded,
     };
 }
 
 const mapDispatchToProps = {
-    getEventList
+    eventListAction,
 }
 
 
