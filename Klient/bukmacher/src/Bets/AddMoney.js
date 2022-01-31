@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import axios from "axios";
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
+import { togglemode } from "../Home/cssmode";
 
 const validateMoney = Yup.object({
     Amount : Yup.number("Nieprawidłowa wartość!").positive("Musi być większe od 0").integer("Musi być całkowite").required("Wymagane!"),
@@ -46,7 +47,7 @@ const AddMoney = (props) => {
     }
     return (
         <div className="Karta">
-        <h1>Wpłać pieniądze</h1>
+        <h1 className={togglemode()}>Wpłać pieniądze</h1>
         <Formik
             initialValues={InitialValues()}
             validationSchema={validateMoney}

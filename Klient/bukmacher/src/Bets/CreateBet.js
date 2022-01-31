@@ -8,13 +8,14 @@ import getData from "../Home/getData";
 import {eventListAction } from "../Events/EventActions";
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
+import { togglemode } from "../Home/cssmode";
 
 const validateBet = Yup.object({
     betTeam: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
     betAmount : Yup.number("Nieprawidłowa wartość!").positive("Musi być większe od 0").integer("Musi być całkowite").required("Wymagane!"),
 });
 
-const CreateBet = ({isEventLoaded, eventListAction, event, maybeID}, props) => {
+const CreateBet = ({ eventListAction, event, maybeID}, props) => {
     
     if (Cookies.get("token") === undefined){
         alert("Zaloguj się aby kontynuować")
@@ -97,7 +98,7 @@ const CreateBet = ({isEventLoaded, eventListAction, event, maybeID}, props) => {
     if (event.eventstatus === "W trakcie") {
     return (
         <div className="Karta">
-        <h1>Dodaj bet</h1>
+        <h1 className={togglemode()}>Dodaj bet</h1>
         <Formik
             initialValues={InitialValues()}
             validationSchema={validateBet}
@@ -118,8 +119,8 @@ const CreateBet = ({isEventLoaded, eventListAction, event, maybeID}, props) => {
             {({ errors, touched }) => (
                 <Form>
                     <div>
-                        <Field type="radio" name="betTeam" value={event.team1} />  {event.team1} {calculateodds(event.bett1, event.bett2)}
-                        <Field type="radio" name="betTeam" value={event.team2} />  {event.team2} {calculateodds(event.bett2, event.bett1)}
+                        <Field type="radio" name="betTeam" value={event.team1} /> <div className={"h3" + togglemode()}> {event.team1} {calculateodds(event.bett1, event.bett2)}</div>
+                        <Field type="radio" name="betTeam" value={event.team2} /> <div className={"h3" + togglemode()}> {event.team2} {calculateodds(event.bett2, event.bett1)}</div>
                         <div className="error">{errors.betTeam && touched.betTeam ? (<div>{errors.betTeam}</div>) : null}</div>
                     </div>
                     <div>

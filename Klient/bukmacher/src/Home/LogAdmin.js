@@ -1,6 +1,7 @@
 import Cookies from 'js-cookie'
 import {Link} from "react-router-dom";
 import jwt from 'jsonwebtoken';
+import { togglemode } from './cssmode';
 
 export const LogAdmin = () => {
   if(Cookies.get("token") !== undefined){
@@ -8,7 +9,7 @@ export const LogAdmin = () => {
       return(
         <ul>
           <li>
-              <Link className="Link" to="/events/add">Dodaj wydarzenie</Link>
+              <Link className={"Link"+ togglemode()} to="/events/add">Dodaj wydarzenie</Link>
           </li>
         </ul>
       )

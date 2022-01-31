@@ -5,6 +5,7 @@ import { withRouter } from "react-router";
 import * as Yup from 'yup';
 import axios from "axios";
 import Cookies from 'js-cookie'
+import { togglemode } from "../Home/cssmode";
 
 const validateEvent = Yup.object({
     email: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
@@ -45,8 +46,8 @@ const AccountLogin = ({history}, props) => {
     }
 
     return (
-        <div className="Region-Page">
-           <h1>Logowanie</h1>
+        <div className={"Region-Page" + togglemode()}>
+           <h1 className={togglemode()}>Logowanie</h1>
             <Formik
                 initialValues={InitialValues()}
                 validationSchema={validateEvent}

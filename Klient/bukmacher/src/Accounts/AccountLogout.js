@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import Cookies from 'js-cookie'
+import { togglemode } from "../Home/cssmode";
 
 
 const AccountLogout = ({history}, props) => {
@@ -15,8 +16,8 @@ const AccountLogout = ({history}, props) => {
     }
 
     return (
-        <div className="Region-Page">
-           <h1>Wylogować?</h1>
+        <div className={"Region-Page" + togglemode()}>
+           <h1 className={togglemode()}>Wylogować?</h1>
             <button type="submit" onSubmit={handleSubmit()}>
                 Wyloguj
             </button>

@@ -5,6 +5,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
+import { useEffect, useState } from "react";
 import EventForm from './Events/EventForm';
 import EventList from './Events/EventList';
 import AccountLogin from './Accounts/AccountLogin';
@@ -17,19 +18,52 @@ import { LogMenu } from './Home/LogMenu';
 import { LogAdmin } from './Home/LogAdmin';
 import UserForm from './Accounts/UserForm';
 import AddMoney from './Bets/AddMoney';
+import Chat from './Home/Chat';
+import { connectToFinished } from './Home/mqttFinished'
+import Cookies from 'js-cookie'
+import { togglemode } from './Home/cssmode';
+import UserOperations from './Bets/UserOperations';
 
 function App() {
 
+  useEffect(() => {
+    connectToFinished()
+    togglemode()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const [toggle, setToggle] = useState(Cookies.get("mode"));
+
+  const triggerToggle = () => {
+    if (toggle === "dark"){
+      setToggle("light")
+      Cookies.remove("mode")
+      Cookies.set("mode", "light", { expires: 1 })
+      window.location.reload(true);
+    }
+    else {
+      setToggle("dark")
+      Cookies.remove("mode")
+      Cookies.set("mode", "dark", { expires: 1 })
+      window.location.reload(true);
+    }
+  }
+  
+
   return (
     <Router>
-      <div className="App">
-      <nav>
+      <div className={"App" + togglemode()}>
+      <nav className={"navbar"+ togglemode()}>
           <ul className="Lista">
+          <button className = "modebutton" onClick={() => triggerToggle()}>{toggle}</button>
             <li>
-              <Link className="Link" to="/">Strona główna</Link>
+              <Link className={"Link"+ togglemode()} to="/">Strona główna</Link>
             </li>
             <li>
-              <Link className="Link" to="/events">Wydarzenia</Link>
+              <Link className={"Link"+ togglemode()} to="/events">Wydarzenia</Link>
+            </li>
+            <li>
+              <Link className={"Link"+ togglemode()} to="/chat">Chat</Link>
             </li>
             {LogAdmin()}
             {LogMenu()}
@@ -45,6 +79,9 @@ function App() {
           </Route>
           <Route exact path="/userbets/">
             <UserBets />
+          </Route>
+          <Route exact path="/useroperations/">
+            <UserOperations />
           </Route>
           <Route exact path="/bet/:id">
             <CreateBet />
@@ -66,6 +103,9 @@ function App() {
           </Route>
           <Route path ="/logout">
             <AccountLogout />
+          </Route>
+          <Route path ="/chat">
+            <Chat />
           </Route>
           <Route path="/">
             <Home />

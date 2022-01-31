@@ -8,40 +8,22 @@ import axios from "axios";
 import getData from "../Home/getData";
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
+import { sendAlert } from "../Home/mqttFinished";
+import { togglemode } from "../Home/cssmode";
 
 const validateEvent = Yup.object({
-    // name: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
-    // image: Yup.string("Nieprawidłowa wartość!").url("Musi być linkiem").required("Wymagane!"),
-    // type: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
-    // eats: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
+    kind: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
+    team1: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
+    team2: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
 });
 
-const EventForm = ({ eventListAction, addEventAction, event, editEventAction, maybeID }, props) => {
+const EventForm = ({ eventListAction, addEventAction, event, editEtAction, maybeID }, props) => {
 
     useEffect(() => {
         getData(false, eventListAction)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
     
-    const addInitalBet = async (values, team) => {try {
-        const response = await axios.post('http://localhost:5000/bets', {
-            userid: 0,
-            eventId: values[0].id,
-            betTeam: team,
-            betAmount: 10,
-            odd: 2.00,
-        }, {
-            headers: {
-                "x-access-token": Cookies.get("token")
-            }
-        });
-        if (response.status === 200){
-            getData(false, eventListAction)
-        }
-    } catch (ex) {
-        console.log(ex)
-    }
-}
     const createEvent = async (values) => {
         try {
             const response = await axios.post('http://localhost:5000/events', values, {
@@ -50,9 +32,7 @@ const EventForm = ({ eventListAction, addEventAction, event, editEventAction, ma
                 }
             });
             if (response.status === 200){
-                addEventAction(response.data);
-                addInitalBet(response.data, values.team1)
-                addInitalBet(response.data, values.team2)
+
             }
         } catch (ex) {
             console.log(ex)
@@ -67,7 +47,19 @@ const EventForm = ({ eventListAction, addEventAction, event, editEventAction, ma
                 }
             });
             if (response.status === 200)
-                editEventAction(response.data);
+            {  
+                var odd = 0
+                var b1 = parseFloat(values.bett1)
+                var b2 = parseFloat(values.bett2)
+
+                if (values.winner === values.team1){
+                    odd = 1/(b1/(b1+b2))
+                }
+                else if (values.winner === values.team2){
+                    odd = 1/(b2/(b1+b2))
+                }
+                sendAlert(values.team1, values.team2, values.winner, odd.toFixed(2))
+            }
         } catch (ex) {
             console.log(ex)
         }
@@ -81,7 +73,6 @@ const EventForm = ({ eventListAction, addEventAction, event, editEventAction, ma
             editEvent(values)
         }
         alert("Wydarzenie" + alertForm(maybeID));
-        window.location.reload(true);
     }
 
     const InitialValues = () => {
@@ -92,6 +83,8 @@ const EventForm = ({ eventListAction, addEventAction, event, editEventAction, ma
                 team2: '',
                 winner: 'None',
                 eventStatus: 'W trakcie',
+                bett1: 10,
+                bett2: 10
             }
         }
         else {
@@ -101,16 +94,18 @@ const EventForm = ({ eventListAction, addEventAction, event, editEventAction, ma
                 team2: `${event.team2}`,
                 winner: `${event.winner}`,
                 eventStatus: 'Zakończone',
+                bett1: `${event.bett1}`,
+                bett2: `${event.bett2}`
             }
         }
     }
 
     const Title = (maybeID) => {
         if (maybeID === undefined) {
-            return <h1>Dodaj event</h1>
+            return <h1 className={togglemode()}>Dodaj event</h1>
         }
         else {
-            return <h1>Edytuj event</h1>
+            return <h1 className={togglemode()}>Edytuj event</h1>
         }
     }
 
@@ -136,7 +131,7 @@ const EventForm = ({ eventListAction, addEventAction, event, editEventAction, ma
 
         if (jwt.decode(Cookies.get("token")).access_level === "admin") {
             return (
-                <div className="Region-Page">
+                <div className={"Region-Page" + togglemode()}>
                     {Title(maybeID)}
                     <Formik
                         initialValues={InitialValues()}
@@ -190,7 +185,7 @@ const EventForm = ({ eventListAction, addEventAction, event, editEventAction, ma
         }
         else{
             return (
-                <h1>Brak uprawnień</h1>
+                <h1 className={togglemode()}>Brak uprawnień</h1>
             )
         }
     }

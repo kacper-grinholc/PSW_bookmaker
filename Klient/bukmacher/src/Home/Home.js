@@ -1,16 +1,18 @@
+import { togglemode } from "./cssmode";
+
 const Home = () => {
     return (
-        <div className="Home">
-            <div className="Tytul">Witaj na stronie bukmacherskiej</div>
-            <div className="Strona-Tytulowa">
-                <div className="bok">
+        <div className={"Home" + togglemode()}>
+            <div className={"Tytul"+ togglemode()}>Witaj na stronie bukmacherskiej</div>
+            <div className={"Strona-Tytulowa"+ togglemode()}>
+                <div className={"bok"+ togglemode()}>
                 </div>
-                <div className="Tekst">
+                <div className={"Tekst"+ togglemode()}>
                 </div>
-                <div className="bok">
+                <div className={"bok"+ togglemode()}>
                 </div>
             </div>
-            <div className="dol">
+            <div className={"dol"+ togglemode()}>
             </div>
         </div>
     )

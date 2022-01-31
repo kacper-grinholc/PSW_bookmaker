@@ -19,11 +19,12 @@ const url = `mqtt://${host}:${port}`
 const client = mqtt.connect(url, OPTIONS)
 const eventsTopic = 'eventsTopic'
 
-client.on('connect', () => {
-    console.log('connected')
-    client.subscribe(eventsTopic)
-})
-
+if (!client.connected) {
+    client.on('connect', () => {
+        console.log('connected')
+        client.subscribe(eventsTopic)
+    })
+}
 const usingMqtt = (eventTypeToactionMap) => {
 
     client.on('message', (topic, message) => {

@@ -5,6 +5,7 @@ import axios from "axios";
 import Cookies from 'js-cookie'
 import { Field, Form, Formik } from "formik"
 import * as Yup from 'yup';
+import { togglemode } from "../Home/cssmode";
 
 const validateEvent = Yup.object({
     email: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
@@ -75,8 +76,8 @@ const UserForm = ({ ID }, props) => {
     }
 
     return (
-        <div className="Region-Page">
-           <h1>Edytuj Konto</h1>
+        <div className={"Region-Page"+ togglemode()}>
+           <h1 className={togglemode()}>Edytuj Konto</h1>
             <Formik
                 initialValues={InitialValues()}
                 validationSchema={validateEvent}

@@ -39,6 +39,11 @@ async function calculateBets() {
   return await client.query(query, [])
 }
 
+async function finishEvent(ID, winner) {
+  const query = `SELECT betAmount, odd, userid FROM bets WHERE eventId = $1 AND betTeam = $2;`
+  return await client.query(query, [ID, winner])
+}
+
 async function getBalance(id) {
   return await client.query('SELECT SUM(Amount) as balance FROM operations WHERE userid = $1;', [id])
 }
@@ -108,7 +113,7 @@ app.get('/events', async (req, res) => {
 });
 
 app.post('/events', auth, async (req, res) => {
-  if(req.user.access_level !== "admin") {
+  if (req.user.access_level !== "admin") {
     return res.status(403).send("You are not an admin");
   }
   client.query('INSERT INTO events(kind, team1, team2, winner, eventStatus) VALUES($1, $2, $3, $4, $5) RETURNING *',
@@ -116,24 +121,26 @@ app.post('/events', auth, async (req, res) => {
       if (err) {
         console.log(err.stack)
       } else {
-        mqttMsg = {
-          "eventType" : "EVENT_ADDED",
-          "value" : {
-            "id": result.rows[0].id,
-            "kind": result.rows[0].kind,
-            "team1": result.rows[0].team1,
-            "team2": result.rows[0].team2,
-            "winner": result.rows[0].winner,
-            "eventstatus": result.rows[0].eventstatus,
-            "creationdate": result.rows[0].creationdate,
-            "bett1": 10,
-            "bett2": 10
+        client.query('INSERT INTO bets(userid, eventId, betTeam, betAmount, odd) VALUES(0, $1, $2, 10, 2.00), (0, $1, $3, 10, 2.00)', [result.rows[0].id, result.rows[0].team1, result.rows[0].team2]).then(r2 => {
+          console.log(r2.rows)
+          mqttMsg = {
+            "eventType": "EVENT_ADDED",
+            "value": {
+              "id": result.rows[0].id,
+              "kind": result.rows[0].kind,
+              "team1": result.rows[0].team1,
+              "team2": result.rows[0].team2,
+              "winner": result.rows[0].winner,
+              "eventstatus": result.rows[0].eventstatus,
+              "creationdate": result.rows[0].creationdate,
+              "bett1": req.body.bett1,
+              "bett2": req.body.bett2
+            }
           }
-        }
-        mqttService.eventMessage(JSON.stringify(mqttMsg))
-        console.log(result.rows[0])
-        return res.send(result.rows);
-      }
+          mqttService.eventMessage(JSON.stringify(mqttMsg))
+          console.log(result.rows[0])
+          return res.send(result.rows);
+        })}
     })
 });
 
@@ -147,9 +154,9 @@ app.delete('/events/:id', auth, async (req, res) => {
       console.log(err.stack)
     } else {
       mqttMsg = {
-        "eventType" : "EVENT_DELETED",
-        "value" :  {
-          "id" : id
+        "eventType": "EVENT_DELETED",
+        "value": {
+          "id": id
         }
       }
       mqttService.eventMessage(JSON.stringify(mqttMsg))
@@ -164,16 +171,37 @@ app.put('/events/:id', auth, async (req, res) => {
     return res.status(401).send("You are not an admin");
   }
   client.query('UPDATE events SET kind = $1, team1 = $2, team2 = $3, winner = $4, eventStatus = $5 WHERE id = $6 RETURNING *;',
-    [req.body.kind, req.body.team1, req.body.team2, req.body.winner, req.body.eventStatus, id], (err, result) => {
+    [req.body.kind, req.body.team1, req.body.team2, req.body.winner, req.body.eventStatus, id], async (err, result) => {
       if (err) {
         console.log(err.stack)
       } else {
-        mqttMsg = {
-          "eventType" : "EVENT_EDITED",
-          "value" : result.rows[0]
+        const betsDB = await finishEvent(result.rows[0].id, result.rows[0].winner)
+        console.log(betsDB.rows)
+        var query = "INSERT INTO operations (operationType, Amount, userid) VALUES"
+        for (const bet of betsDB.rows) {
+          console.log(bet.betamount, typeof (bet.betamount), bet.odd, typeof (bet.odd))
+          query += `('wygrana', ${bet.betamount * bet.odd}, ${bet.userid}),`
         }
-        mqttService.eventMessage(JSON.stringify(mqttMsg))
-        return res.send(result.rows[0]);
+        query = query.slice(0, -1) + " RETURNING *;"
+        client.query(query, []).then(r2 => {
+          console.log(r2.rows)
+          mqttMsg = {
+            "eventType": "EVENT_EDITED",
+            "value": {
+              "id": result.rows[0].id,
+              "kind": result.rows[0].kind,
+              "team1": result.rows[0].team1,
+              "team2": result.rows[0].team2,
+              "winner": result.rows[0].winner,
+              "eventstatus": result.rows[0].eventstatus,
+              "creationdate": result.rows[0].creationdate,
+              "bett1": req.body.bett1,
+              "bett2": req.body.bett2
+            }
+          }
+          mqttService.eventMessage(JSON.stringify(mqttMsg))
+          return res.send(result.rows[0]);
+        })
       }
     })
 });
@@ -183,9 +211,11 @@ app.post('/bets', auth, async (req, res) => {
   console.log(balanceDbResult.rows)
   const balance = balanceDbResult.rows[0].balance
   console.log(balance)
-  if (balance - req.body.betAmount < 0) {
-    console.log("not enough money")
-    return res.status(400).send("not enough money");
+  if (req.body.userid !== 0) {
+    if (balance - req.body.betAmount < 0) {
+      console.log("not enough money")
+      return res.status(400).send("not enough money");
+    }
   }
   client.query('INSERT INTO bets(userid, eventId, betTeam, betAmount, odd) VALUES($1, $2, $3, $4, $5) RETURNING *',
     [req.body.userid, req.body.eventId, req.body.betTeam, req.body.betAmount, req.body.odd], async (err, result) => {
@@ -194,8 +224,8 @@ app.post('/bets', auth, async (req, res) => {
       } else {
         const eventDb = await getEvent(req.body.eventId)
         mqttMsg = {
-          "eventType" : "EVENT_EDITED",
-          "value" : eventDb[0]
+          "eventType": "EVENT_EDITED",
+          "value": eventDb[0]
         }
         mqttService.eventMessage(JSON.stringify(mqttMsg))
         return res.send(result.rows);
@@ -207,15 +237,15 @@ app.get('/bets', auth, async (req, res) => {
   let id = req.user.user_id;
   console.log(req.user)
   client.query('SELECT * FROM bets WHERE userid = $1;', [id], (err, result) => {
-      if (err) {
-        console.log(err.stack)
-      } else {
-        return res.send(result.rows);
-      }
-    })
+    if (err) {
+      console.log(err.stack)
+    } else {
+      return res.send(result.rows);
+    }
+  })
 });
 
-app.post('/operations', auth,  async (req, res) => {
+app.post('/operations', auth, async (req, res) => {
   client.query('INSERT INTO operations(operationType, Amount, userid) VALUES($1, $2, $3) RETURNING *',
     [req.body.operationType, req.body.Amount, req.body.userid], (err, result) => {
       if (err) {
@@ -230,12 +260,23 @@ app.post('/operations', auth,  async (req, res) => {
 app.get('/operations/:id', auth, async (req, res) => {
   let id = req.params.id;
   client.query('SELECT SUM (Amount) FROM operations WHERE userid = $1;', [id], (err, result) => {
-      if (err) {
-        console.log(err.stack)
-      } else {
-        return res.send(result.rows);
-      }
-    })
+    if (err) {
+      console.log(err.stack)
+    } else {
+      return res.send(result.rows);
+    }
+  })
+});
+
+app.get('/transactions/:id', auth, async (req, res) => {
+  let id = req.params.id;
+  client.query('SELECT * FROM operations WHERE userid = $1;', [id], (err, result) => {
+    if (err) {
+      console.log(err.stack)
+    } else {
+      return res.send(result.rows);
+    }
+  })
 });
 
 app.get('/users/:id', auth, async (req, res) => {
@@ -361,20 +402,20 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/hello", async (req, res) => {
-  mqttService.eventMessage(JSON.stringify({
-    "id": 2,
-    "kind": "Football",
-    "team1": "Warka Gdynia",
-    "team2": "Lechia Gdańsk",
-    "winner": "None",
-    "eventstatus": "W trakcie",
-    "creationdate": "2022-01-30T14:48:35.220Z",
-    "bett1": "20",
-    "bett2": "40"
-}))
-  return res.status(200).json(req.user)
-});
+// app.get("/hello", async (req, res) => {
+//   mqttService.eventMessage(JSON.stringify({
+//     "id": 2,
+//     "kind": "Football",
+//     "team1": "Warka Gdynia",
+//     "team2": "Lechia Gdańsk",
+//     "winner": "None",
+//     "eventstatus": "W trakcie",
+//     "creationdate": "2022-01-30T14:48:35.220Z",
+//     "bett1": "20",
+//     "bett2": "40"
+// }))
+//   return res.status(200).json(req.user)
+// });
 
 require('dotenv').config();
 const dbConnData = {

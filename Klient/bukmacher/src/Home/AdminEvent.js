@@ -1,8 +1,8 @@
 import Cookies from 'js-cookie'
 import {Link} from "react-router-dom";
 import jwt from 'jsonwebtoken';
-import { deleteEventAction } from '../Events/EventActions';
 import axios from "axios";
+import { togglemode } from './cssmode';
 
 const deleteAnimal = async (event) => {
     try {
@@ -12,9 +12,7 @@ const deleteAnimal = async (event) => {
             }
         });
         if (response.status === 200) {
-            deleteEventAction(event);
             alert("Usunięto");
-            window.location.reload(true);
         }
     } catch (ex) {
         console.log(ex)
@@ -26,7 +24,7 @@ export const AdminEvent = (event) => {
     if(jwt.decode(Cookies.get("token")).access_level === "admin"){
       return(
         <div>
-            <Link className="Link" to={`/events/edit/${event.id}`}>Edytuj wydarzenie</Link>
+            <Link className={"Link"+ togglemode()} to={`/events/edit/${event.id}`}>Edytuj wydarzenie</Link>
             <button onClick={() => deleteAnimal(event)}>Usuń</button>
         </div>
       )

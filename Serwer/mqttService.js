@@ -17,6 +17,9 @@ const OPTIONS = {
 let connectUrl = `ws://${host}:${port}`
 
 const eventsTopic = 'eventsTopic'
+const chatTopic = 'chatTopic'
+const eventFinished = 'eventFinished'
+const chatmetaData = 'chatmetaData'
 
 const mqttClient = mqtt.connect(connectUrl, OPTIONS)
 
@@ -27,6 +30,15 @@ mqttClient.on('connect', () => {
   console.log(`Connected`)
   mqttClient.subscribe([eventsTopic], () => {
     console.log(`Subscribe to topic '${eventsTopic}'`)
+  })
+  mqttClient.subscribe([chatTopic], () => {
+    console.log(`Subscribe to topic '${chatTopic}'`)
+  })
+  mqttClient.subscribe([eventFinished], () => {
+    console.log(`Subscribe to topic '${eventFinished}'`)
+  })
+  mqttClient.subscribe([chatmetaData], () => {
+    console.log(`Subscribe to topic '${chatmetaData}'`)
   })
 })
 

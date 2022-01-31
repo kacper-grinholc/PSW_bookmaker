@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import * as Yup from 'yup';
 import axios from "axios";
+import { togglemode } from "../Home/cssmode";
 
 const validateEvent = Yup.object({
     email: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),
@@ -44,8 +45,8 @@ const AccountRegister = ({history}, props) => {
     }
 
     return (
-        <div className="Region-Page">
-           <h1>Rejestracja</h1>
+        <div className={"Region-Page" + togglemode()}>
+           <h1 className={togglemode()}>Rejestracja</h1>
             <Formik
                 initialValues={InitialValues()}
                 validationSchema={validateEvent}

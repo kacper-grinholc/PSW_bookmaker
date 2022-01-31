@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 import axios from "axios";
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
+import { togglemode } from "../Home/cssmode";
 
 const BetList = ({ ID }, props) => {
     const [bets, setBets] = useState([]);
@@ -68,10 +69,10 @@ const BetList = ({ ID }, props) => {
 
     return (
             <div className="Karta">
-                <h1>Historia betów</h1>
+                <h1 className={togglemode()}>Historia betów</h1>
                 {cash.map(cash => {
                     return (
-                        <h3 key = {cash.sum}>Ilośc pieniędzy na koncie: {cash.sum}</h3>
+                        <h3 className={"h3"+togglemode()} key = {cash.sum}>Ilośc pieniędzy na koncie: {cash.sum}</h3>
                     )
                 })}
                 <div className="Wyniki">
@@ -79,7 +80,7 @@ const BetList = ({ ID }, props) => {
                     (firstItem.id > secondItem.id) ? -1:1)
                      .map(bet => {
                         return (
-                            <div className="Item" key={bet.id}>
+                            <div className={"Item" + togglemode()} key={bet.id}>
                                 <div>Drużyna: {bet.betteam}</div>
                                 <div>Ilość: {bet.betamount}</div>
                                 <div>Kurs: {bet.odd} </div>

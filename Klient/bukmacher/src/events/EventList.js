@@ -6,6 +6,7 @@ import { eventListAction, addEventAction, deleteEventAction, editEventAction } f
 import getData from "../Home/getData";
 import { AdminEvent } from "../Home/AdminEvent";
 import usingMqtt from "../Home/mqtt";
+import { togglemode } from "../Home/cssmode";
 
 const EventList = ({ events, isEventLoaded, eventListAction, addEventAction, editEventAction, deleteEventAction, query }, props) => {
 
@@ -48,7 +49,7 @@ const EventList = ({ events, isEventLoaded, eventListAction, addEventAction, edi
 
     return (
         <div className="Karta">
-            <h1>Lista wydarzeń</h1>
+            <h1 className={togglemode()}>Lista wydarzeń</h1>
             {queryResult(query)}
             <div className="Wyniki">
             <div><input type="text" onChange={handlefilterChange}/></div>
@@ -60,7 +61,7 @@ const EventList = ({ events, isEventLoaded, eventListAction, addEventAction, edi
                 (firstItem.eventstatus > secondItem.eventstatus) ? 1:-1)
                 .map(event => {
                     return (
-                        <div className="Item" key={event.id}>
+                        <div className={"Item" + togglemode()} key={event.id}>
                             <div>Dyscyplina: {event.kind}</div>
                             <Link className="LinkBet" to={`/bet/${event.id}`}>
                                 <div>Drużyna1: {event.team1} Kurs: {calculateodds(event.bett1, event.bett2)}</div>
