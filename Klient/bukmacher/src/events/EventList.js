@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { withRouter } from "react-router";
 import { eventListAction, addEventAction, deleteEventAction, editEventAction } from "./EventActions";
-import getData from "../Home/getData";
-import { AdminEvent } from "../Home/AdminEvent";
-import usingMqtt from "../Home/mqtt";
-import { togglemode } from "../Home/cssmode";
+import getData from "../OthersFunctions/getData";
+import { AdminEvent } from "../AdminMenu/AdminEvent";
+import usingMqtt from "../mqtt/mqtt";
+import { togglemode } from "../OthersFunctions/cssmode";
 
 const EventList = ({ events, isEventLoaded, eventListAction, addEventAction, editEventAction, deleteEventAction, query }, props) => {
 

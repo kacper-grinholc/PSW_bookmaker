@@ -2,7 +2,7 @@ import Cookies from 'js-cookie'
 import {Link} from "react-router-dom";
 import jwt from 'jsonwebtoken';
 import axios from "axios";
-import { togglemode } from './cssmode';
+import { togglemode } from '../OthersFunctions/cssmode';
 
 const deleteAccount = async () => {
   const id = jwt.decode(Cookies.get("token")).user_id

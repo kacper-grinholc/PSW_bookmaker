@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import axios from "axios";
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
-import { togglemode } from "../Home/cssmode";
+import { togglemode } from "../OthersFunctions/cssmode";
 
 const OperationList = (props) => {
     const [operations, setOperations] = useState([]);
@@ -52,7 +52,7 @@ const OperationList = (props) => {
     return (
             <div className="Karta">
                 <h1 className={togglemode()}>Historia operacji</h1>
-                <div>
+                <div className="operationfilter">
                     <select name="type" onChange={handlefilter1Change}>
                         <option value="All">Wszystkie</option>
                         <option value="bet">Bet</option>
@@ -60,21 +60,21 @@ const OperationList = (props) => {
                         <option value="wpłata">Wpłata</option>
                     </select>
                 </div>
-                <div className="Wyniki">
+                <table className={"operationtable" + togglemode()} >
                     {operations
                     .filter(animal => animal.operationtype === filter1 || filter1 === "All")
                     .sort((firstItem, secondItem) =>
                     (firstItem.id > secondItem.id) ? -1:1)
                     .map(operation => {
                         return (
-                            <div className={"Item" + togglemode()} key={operation.id}>
-                                <div>Typ operacji: {operation.operationtype}</div>
-                                <div>Ilość: {operation.amount}</div>
-                                <div>Data obstawienia: {reformatDate(operation.creationdate)}</div>
-                            </div>
+                                <tr className={"operationrow" + togglemode()} key={operation.id}>
+                                    <th className={"operationelement" + togglemode()}>Typ operacji: {operation.operationtype}</th>
+                                    <th className={"operationelement" + togglemode()}>Ilość: {operation.amount}</th>
+                                    <th className={"operationelement" + togglemode()}>Data operacji: {reformatDate(operation.creationdate)}</th>
+                                </tr>
                             )
                         })}
-                </div>
+                </table>
             </div>
         )
 };

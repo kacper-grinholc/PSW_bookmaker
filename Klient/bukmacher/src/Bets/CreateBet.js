@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import * as Yup from 'yup';
 import axios from "axios";
-import getData from "../Home/getData";
+import getData from "../OthersFunctions/getData";
 import {eventListAction } from "../Events/EventActions";
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
-import { togglemode } from "../Home/cssmode";
+import { togglemode } from "../OthersFunctions/cssmode";
 
 const validateBet = Yup.object({
     betTeam: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),

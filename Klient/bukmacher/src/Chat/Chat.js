@@ -4,8 +4,8 @@ import { withRouter } from "react-router";
 import Cookies from 'js-cookie'
 import $ from 'jquery'; 
 import jwt from 'jsonwebtoken';
-import { connectToChat, disconnectFromChat, messageRecieve, sendMessage, reactToChats, createChat, deleteChat } from "./chatMqtt";
-import { togglemode } from "./cssmode";
+import { connectToChat, disconnectFromChat, messageRecieve, sendMessage, reactToChats, createChat, deleteChat } from "../mqtt/chatMqtt";
+import { togglemode } from "../OthersFunctions/cssmode";
 
 
 const Chat = ( props) => {

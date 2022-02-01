@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import * as Yup from 'yup';
 import axios from "axios";
-import { togglemode } from "../Home/cssmode";
+import { togglemode } from "../OthersFunctions/cssmode";
 
 const validateEvent = Yup.object({
     email: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),

@@ -4,7 +4,7 @@ import { withRouter } from "react-router";
 import axios from "axios";
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
-import { togglemode } from "../Home/cssmode";
+import { togglemode } from "../OthersFunctions/cssmode";
 
 const BetList = ({ ID }, props) => {
     const [bets, setBets] = useState([]);

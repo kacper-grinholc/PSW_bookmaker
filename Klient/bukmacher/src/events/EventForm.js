@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import * as Yup from 'yup';
 import axios from "axios";
-import getData from "../Home/getData";
+import getData from "../OthersFunctions/getData";
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
-import { sendAlert } from "../Home/mqttFinished";
-import { togglemode } from "../Home/cssmode";
+import { sendAlert } from "../mqtt/mqttFinished";
+import { togglemode } from "../OthersFunctions/cssmode";
 
 const validateEvent = Yup.object({
     kind: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),

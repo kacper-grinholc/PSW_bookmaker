@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { connect } from 'react-redux';
 import { withRouter } from "react-router";
 import Cookies from 'js-cookie'
-import { togglemode } from "../Home/cssmode";
+import { togglemode } from "../OthersFunctions/cssmode";
 
 
 const AccountLogout = ({history}, props) => {

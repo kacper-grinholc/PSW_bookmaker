@@ -12,17 +12,17 @@ import AccountLogin from './Accounts/AccountLogin';
 import Home from './Home/Home';
 import AccountRegister from './Accounts/AccountRegister';
 import CreateBet from './Bets/CreateBet';
-import UserBets from './Bets/UserBets';
+import UserBets from './Accounts/UserBets';
 import AccountLogout from './Accounts/AccountLogout';
-import { LogMenu } from './Home/LogMenu';
-import { LogAdmin } from './Home/LogAdmin';
+import { LogMenu } from './AdminMenu/LogMenu';
+import { LogAdmin } from './AdminMenu/LogAdmin';
 import UserForm from './Accounts/UserForm';
 import AddMoney from './Bets/AddMoney';
-import Chat from './Home/Chat';
-import { connectToFinished } from './Home/mqttFinished'
+import Chat from './Chat/Chat';
+import { connectToFinished } from './mqtt/mqttFinished'
 import Cookies from 'js-cookie'
-import { togglemode } from './Home/cssmode';
-import UserOperations from './Bets/UserOperations';
+import { togglemode } from './OthersFunctions/cssmode'
+import UserOperations from './Accounts/UserOperations';
 
 function App() {
 
@@ -48,14 +48,22 @@ function App() {
       window.location.reload(true);
     }
   }
-  
+
+  const ifchecked = () => {
+    if (toggle === "dark"){
+      return "checked"
+    }
+    else{
+
+    }
+  } 
 
   return (
     <Router>
       <div className={"App" + togglemode()}>
       <nav className={"navbar"+ togglemode()}>
           <ul className="Lista">
-          <button className = "modebutton" onClick={() => triggerToggle()}>{toggle}</button>
+          <input className = "imputmode" defaultChecked={ifchecked()} type="checkbox" onClick={() => triggerToggle()} />
             <li>
               <Link className={"Link"+ togglemode()} to="/">Strona główna</Link>
             </li>

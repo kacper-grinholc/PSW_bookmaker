@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import axios from "axios";
 import Cookies from 'js-cookie'
 import jwt from 'jsonwebtoken';
-import { togglemode } from "../Home/cssmode";
+import { togglemode } from "../OthersFunctions/cssmode";
 
 const validateMoney = Yup.object({
     Amount : Yup.number("Nieprawidłowa wartość!").positive("Musi być większe od 0").integer("Musi być całkowite").required("Wymagane!"),

@@ -5,7 +5,7 @@ import axios from "axios";
 import Cookies from 'js-cookie'
 import { Field, Form, Formik } from "formik"
 import * as Yup from 'yup';
-import { togglemode } from "../Home/cssmode";
+import { togglemode } from "../OthersFunctions/cssmode";
 
 const validateEvent = Yup.object({
     email: Yup.string("Nieprawidłowa wartość!").required("Wymagane!"),

@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie'
 import {Link} from "react-router-dom";
 import jwt from 'jsonwebtoken';
-import { togglemode } from './cssmode';
+import { togglemode } from '../OthersFunctions/cssmode';
 
 export const LogAdmin = () => {
   if(Cookies.get("token") !== undefined){
