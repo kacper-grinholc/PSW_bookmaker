@@ -3,16 +3,18 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {applyMiddleware, combineReducers, createStore } from 'redux';
+import { combineReducers, createStore, applyMiddleware } from 'redux';
+import logger from 'redux-logger'
 import { Provider } from 'react-redux';
-import thunk from 'redux-thunk';
-import eventReducer from './events/EventReducer'
+import eventReducer from './Events/EventReducer'
 
-const store = createStore(
-  combineReducers({
-    events: eventReducer
-  }), applyMiddleware(thunk)
-)
+let store = createStore(
+  combineReducers(
+    { 
+      events: eventReducer,
+    }
+  ),applyMiddleware(logger));
+
 
 
 ReactDOM.render(
@@ -20,7 +22,6 @@ ReactDOM.render(
     <Provider store={store}>
       <App />
     </Provider>
-
   </React.StrictMode>,
   document.getElementById('root')
 );

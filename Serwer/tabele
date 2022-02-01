@@ -1,8 +1,10 @@
 CREATE TABLE IF NOT EXISTS users (
    id serial PRIMARY KEY,
-   username VARCHAR UNIQUE NOT NULL,
-   passwd VARCHAR NOT NULL,
-   cash INT
+   username VARCHAR NOT NULL,
+   email VARCHAR NOT NULL,
+   password VARCHAR NOT NULL,
+   token VARCHAR,
+   access_level VARCHAR DEFAULT 'user'
 );
 
 CREATE TABLE IF NOT EXISTS events (
@@ -10,31 +12,28 @@ CREATE TABLE IF NOT EXISTS events (
    kind  VARCHAR NOT NULL,
    team1 VARCHAR NOT NULL,
    team2 VARCHAR NOT NULL,
-   betTeam1 INT,
-   betTeam2 INT,
    winner VARCHAR,
-   statu VARCHAR NOT NULL
+   eventStatus VARCHAR NOT NULL,
+   creationDate timestamp default current_timestamp
 );
 
-CREATE TABLE IF NOT EXISTS activeBet (
+CREATE TABLE IF NOT EXISTS bets (
    id serial PRIMARY KEY,
-   user VARCHAR NOT NULL,
-   eventKind VARCHAR NOT NULL
-   eventId INT NOT NULL,
-   betTeam VARCHAR NOT NULL,
-   betAmount INT NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS betHistory (
-   id serial PRIMARY KEY,
-   user VARCHAR NOT NULL,
-   eventKind VARCHAR NOT NULL
+   userid INT NOT NULL,
    eventId INT NOT NULL,
    betTeam VARCHAR NOT NULL,
    betAmount INT NOT NULL,
-   moneyEarned INT NOT NULL
+   odd FLOAT NOT NULL,
+   creationDate timestamp default current_timestamp
 );
 
+CREATE TABLE IF NOT EXISTS operations (
+   id serial PRIMARY KEY,
+   operationType VARCHAR NOT NULL,
+   Amount INT NOT NULL,
+   userid INT NOT NULL,
+   creationDate timestamp default current_timestamp
+);
 
 INSERT INTO users (name, creationDate)
 VALUES ('Simon548', 'magenta', 0); 
