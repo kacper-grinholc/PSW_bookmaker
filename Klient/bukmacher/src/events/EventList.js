@@ -46,7 +46,13 @@ const EventList = ({ events, isEventLoaded, eventListAction, addEventAction, edi
             )
         }
     }
-
+    
+    const ifFinished = (status) =>{
+        if (status === "Zakończone")
+            return "finished"
+        else
+            return ""
+    }
     return (
         <div className="Karta">
             <h1 className={togglemode()}>Lista wydarzeń</h1>
@@ -61,7 +67,7 @@ const EventList = ({ events, isEventLoaded, eventListAction, addEventAction, edi
                 (firstItem.eventstatus > secondItem.eventstatus) ? 1:-1)
                 .map(event => {
                     return (
-                        <div className={"Item" + togglemode()} key={event.id}>
+                        <div className={"Item" + ifFinished(event.eventstatus) + togglemode()} key={event.id}>
                             <div>Dyscyplina: {event.kind}</div>
                             <Link className="LinkBet" to={`/bet/${event.id}`}>
                                 <div>Drużyna1: {event.team1} Kurs: {calculateodds(event.bett1, event.bett2)}</div>

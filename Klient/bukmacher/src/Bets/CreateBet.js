@@ -139,7 +139,7 @@ const CreateBet = ({ eventListAction, event, maybeID}, props) => {
     }
     else {
         return (
-        <h1>Event zakończony</h1>
+        <h1 className={togglemode()}>Event zakończony</h1>
         )
     }
 };

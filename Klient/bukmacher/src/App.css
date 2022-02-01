@@ -233,13 +233,24 @@ button[disabled]{
   height: 20%;
   width: 30%;
   border: 3px solid black;
-  background-color: lightcoral;
+  background-color: rgb(226, 111, 111);
   border-radius: 5%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
+.Itemfinished{
+  margin-top: 1%;
+  height: 20%;
+  width: 30%;
+  border: 3px solid black;
+  background-color: #383232;
+  border-radius: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
 .Details-Page{
   width: 70%;
@@ -515,6 +526,19 @@ td:hover{
 }
 
 .Itemdark{
+  margin-top: 1%;
+  height: 20%;
+  width: 30%;
+  border: 3px solid black;
+  background-color: #383232;
+  color: white;
+  border-radius: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Itemfinisheddark{
   margin-top: 1%;
   height: 20%;
   width: 30%;
